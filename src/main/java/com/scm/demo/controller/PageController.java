@@ -3,6 +3,7 @@ package com.scm.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -13,6 +14,7 @@ import com.scm.demo.helpers.MessageType;
 import com.scm.demo.services.UserService;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -77,11 +79,17 @@ public class PageController {
     // processing register
 
     @RequestMapping(value = "/do-register", method = RequestMethod.POST)
-    public String processRegister(@ModelAttribute UserForm userForm, HttpSession session) {
+    public String processRegister(@Valid @ModelAttribute UserForm userForm, BindingResult rBindingResult,
+            HttpSession session) {
         System.out.println("Processing registration");
         // fetch form data
         // UserForm
         System.out.println(userForm);
+
+		// validate form data
+		if (rBindingResult.hasErrors()) {
+            return "register";
+        }
 
 		User user = new User();
         user.setName(userForm.getName());
@@ -91,8 +99,7 @@ public class PageController {
         user.setPhoneNumber(userForm.getPhoneNumber());
         user.setProfilePic(
                 "https://www.learncodewithdurgesh.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fdurgesh_sir.35c6cb78.webp&w=1920&q=75");
-
-        User savedUser = userService.saveUser(user);
+        userService.saveUser(user);
 
         System.out.println("user saved :");
 
@@ -100,11 +107,11 @@ public class PageController {
 
         // add the message:
 
-        Message message = Message.builder().content("Registration Successful").type(MessageType.blue).build();
+        Message message = Message.builder().content("Registration Successful").type(MessageType.green).build();
 
         session.setAttribute("message", message);
 
-        // redirectto login page
+        // redirect to login page
         return "redirect:/register";
     }
 
