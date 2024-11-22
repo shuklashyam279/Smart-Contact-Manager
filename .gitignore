@@ -31,3 +31,14 @@ build/
 
 ### VS Code ###
 .vscode/
+
+#Node
+node_modules
+package-lock.json
+
+#MySQL
+mysql_data/
+keyfile.txt
+
+#Env
+.env
