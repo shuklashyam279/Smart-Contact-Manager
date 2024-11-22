@@ -16,4 +16,18 @@ public class PageController {
         model.addAttribute("githubRepo", "https://github.com/learncodewithdurgesh/");
         return "home";
     }
+
+	// about route
+    @RequestMapping("/about")
+    public String aboutPage(Model model) {
+        model.addAttribute("isLogin", true);
+        System.out.println("About page loading");
+        return "about";
+    }
+    // services
+    @RequestMapping("/services")
+    public String servicesPage() {
+        System.out.println("services page loading");
+        return "services";
+    }
 }
