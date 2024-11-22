@@ -11,12 +11,13 @@ document.addEventListener("DOMContentLoaded", () => {
 function changeTheme() {
   //set to web page
 
-  changePageTheme(currentTheme, currentTheme);
+  changePageTheme(currentTheme, "");
   //set the listener to change theme button
   const changeThemeButton = document.querySelector("#theme_change_button");
 
   const oldTheme = currentTheme;
   changeThemeButton.addEventListener("click", (event) => {
+    const oldTheme = currentTheme;
     console.log("change theme button clicked");
     if (currentTheme === "dark") {
       //theme ko light
@@ -25,6 +26,7 @@ function changeTheme() {
       //theme ko dark
       currentTheme = "dark";
     }
+    console.log(currentTheme);
     changePageTheme(currentTheme, oldTheme);
   });
 }
@@ -45,7 +47,9 @@ function changePageTheme(theme, oldTheme) {
   //localstorage mein update karenge
   setTheme(currentTheme);
   //remove the current theme
-  document.querySelector("html").classList.remove(oldTheme);
+  if (oldTheme) {
+    document.querySelector("html").classList.remove(oldTheme);
+  }
   //set the current theme
   document.querySelector("html").classList.add(theme);
 
