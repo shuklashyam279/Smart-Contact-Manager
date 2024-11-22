@@ -1,4 +1,4 @@
-package com.scm.demo.repsitories;
+package com.scm.demo.repositories;
 
 import java.util.Optional;
 
