@@ -1,14 +1,25 @@
 package com.scm.demo.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.security.core.Authentication;
+
+import com.scm.demo.services.UserService;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
 
-    // user dashbaord page
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
 
+    @Autowired
+    private UserService userService;
+
+    // user dashbaord page
     @RequestMapping(value = "/dashboard")
     public String userDashboard() {
         System.out.println("User dashboard");
@@ -16,19 +27,8 @@ public class UserController {
     }
 
     // user profile page
-
     @RequestMapping(value = "/profile")
-    public String userProfile() {
-        System.out.println("User profile");
+    public String userProfile(Model model, Authentication authentication) {
         return "user/profile";
     }
-
-    // user add contacts page
-
-    // user view contacts
-
-    // user edit contact
-
-    // user delete contact
-
 }

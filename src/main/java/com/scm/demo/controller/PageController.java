@@ -41,7 +41,6 @@ public class PageController {
     }
 
     // about route
-
     @RequestMapping("/about")
     public String aboutPage(Model model) {
         model.addAttribute("isLogin", true);
@@ -50,7 +49,6 @@ public class PageController {
     }
 
     // services
-
     @RequestMapping("/services")
     public String servicesPage() {
         System.out.println("services page loading");
@@ -58,31 +56,26 @@ public class PageController {
     }
 
     // contact page
-
     @GetMapping("/contact")
     public String contact() {
         return new String("contact");
     }
 
+    // this is showing login page
     @GetMapping("/login")
     public String login() {
         return new String("login");
     }
 
+     // registration page
     @GetMapping("/register")
     public String register(Model model) {
-
         UserForm userForm = new UserForm();
-        // default data bhi daal sakte hai
-        // userForm.setName("Durgesh");
-        // userForm.setAbout("This is about : Write something about yourself");
         model.addAttribute("userForm", userForm);
-
         return "register";
     }
 
     // processing register
-
     @RequestMapping(value = "/do-register", method = RequestMethod.POST)
     public String processRegister(@Valid @ModelAttribute UserForm userForm, BindingResult rBindingResult,
             HttpSession session) {
@@ -105,15 +98,10 @@ public class PageController {
         user.setProfilePic(
                 "https://www.learncodewithdurgesh.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fdurgesh_sir.35c6cb78.webp&w=1920&q=75");
         userService.saveUser(user);
-
         System.out.println("user saved :");
 
-        // message = "Registration Successful"
-
         // add the message:
-
         Message message = Message.builder().content("Registration Successful").type(MessageType.green).build();
-
         session.setAttribute("message", message);
 
         // redirect to login page
