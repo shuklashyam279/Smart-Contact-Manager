@@ -42,3 +42,4 @@ keyfile.txt
 
 #Env
 .env
+/src/main/resources/application-dev.properties
