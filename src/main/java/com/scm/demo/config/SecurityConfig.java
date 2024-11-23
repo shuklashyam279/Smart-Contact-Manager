@@ -15,8 +15,15 @@ import com.scm.demo.services.impl.SecurityCustomUserDetailService;
 @Configuration
 public class SecurityConfig {
 
+    private final SecurityCustomUserDetailService userDetailService;
+    private final OAuthAuthenicationSuccessHandler handler;
+
     @Autowired
-    private SecurityCustomUserDetailService userDetailService;
+    public SecurityConfig(SecurityCustomUserDetailService userDetailService,
+            OAuthAuthenicationSuccessHandler handler) {
+        this.userDetailService = userDetailService;
+        this.handler = handler;
+    }
 
     // configuraiton of authentication providerfor spring security
     @Bean
@@ -26,7 +33,6 @@ public class SecurityConfig {
         daoAuthenticationProvider.setUserDetailsService(userDetailService);
         // password encoder ka object
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-
         return daoAuthenticationProvider;
     }
 
@@ -54,18 +60,15 @@ public class SecurityConfig {
             // formLogin.defaultSuccessUrl("/home");
             formLogin.usernameParameter("email");
             formLogin.passwordParameter("password");
-
             // formLogin.failureHandler(new AuthenticationFailureHandler() {
 
             // @Override
             // public void onAuthenticationFailure(HttpServletRequest request,
             // HttpServletResponse response,
             // AuthenticationException exception) throws IOException, ServletException {
-            // // TODO Auto-generated method stub
             // throw new UnsupportedOperationException("Unimplemented method
             // 'onAuthenticationFailure'");
             // }
-
             // });
 
             // formLogin.successHandler(new AuthenticationSuccessHandler() {
@@ -74,13 +77,10 @@ public class SecurityConfig {
             // public void onAuthenticationSuccess(HttpServletRequest request,
             // HttpServletResponse response,
             // Authentication authentication) throws IOException, ServletException {
-            // // TODO Auto-generated method stub
             // throw new UnsupportedOperationException("Unimplemented method
             // 'onAuthenticationSuccess'");
             // }
-
             // });
-
         });
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
@@ -89,8 +89,13 @@ public class SecurityConfig {
             logoutForm.logoutSuccessUrl("/login?logout=true");
         });
 
-        return httpSecurity.build();
+        // oauth configurations
+        httpSecurity.oauth2Login(oauth -> {
+            oauth.loginPage("/login");
+            oauth.successHandler(handler);
+        });
 
+        return httpSecurity.build();
     }
 
     @Bean
