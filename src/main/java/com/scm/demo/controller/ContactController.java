@@ -16,26 +16,36 @@ import com.scm.demo.helpers.Helper;
 import com.scm.demo.helpers.Message;
 import com.scm.demo.helpers.MessageType;
 import com.scm.demo.services.ContactService;
+import com.scm.demo.services.ImageService;
 import com.scm.demo.services.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
+import java.util.UUID;
+import org.slf4j.Logger;
+
 @Controller
 @RequestMapping("/user/contacts")
 public class ContactController {
 
-    @Autowired
-    private ContactService contactService;
+    private Logger logger = org.slf4j.LoggerFactory.getLogger(ContactController.class);
+
+    private final ContactService contactService;
+    private final ImageService imageService;
+    private final UserService userService;
 
     @Autowired
-    private UserService userService;
+    public ContactController(ContactService contactService, ImageService imageService, UserService userService) {
+        this.contactService = contactService;
+        this.imageService = imageService;
+        this.userService = userService;
+    }
 
     @RequestMapping("/add")
     // add contact page: handler
     public String addContactView(Model model) {
         ContactForm contactForm = new ContactForm();
-
         contactForm.setFavorite(true);
         model.addAttribute("contactForm", contactForm);
         return "user/add_contact";
@@ -47,8 +57,8 @@ public class ContactController {
 
         // process the form data
         // 1 validate form
-
         if (result.hasErrors()) {
+            result.getAllErrors().forEach(error -> logger.info(error.toString()));
             session.setAttribute("message", Message.builder()
                     .content("Please correct the following errors")
                     .type(MessageType.red)
@@ -61,6 +71,8 @@ public class ContactController {
 
         User user = userService.getUserByEmail(username);
         // 2 process the contact picture
+        String filename = UUID.randomUUID().toString();
+        String fileURL = imageService.uploadImage(contactForm.getContactImage(), filename);
         Contact contact = new Contact();
         contact.setName(contactForm.getName());
         contact.setFavorite(contactForm.isFavorite());
@@ -71,6 +83,8 @@ public class ContactController {
         contact.setUser(user);
         contact.setLinkedInLink(contactForm.getLinkedInLink());
         contact.setWebsiteLink(contactForm.getWebsiteLink());
+        contact.setPicture(fileURL);
+        contact.setCloudinaryImagePublicId(filename);
         contactService.save(contact);
         System.out.println(contactForm);
 
