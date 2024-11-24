@@ -1,10 +1,15 @@
 package com.scm.demo.services.impl;
 
-import java.util.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.scm.demo.entity.Contact;
+import com.scm.demo.entity.User;
 import com.scm.demo.helpers.ResourceNotFoundException;
 import com.scm.demo.repositories.ContactRepo;
 import com.scm.demo.services.ContactService;
@@ -14,7 +19,6 @@ public class ContactServiceImpl implements ContactService {
 
 	private final ContactRepo contactRepo;
 
-	@Autowired
 	public ContactServiceImpl(ContactRepo contactRepo) {
 		this.contactRepo = contactRepo;
 	}
@@ -60,5 +64,12 @@ public class ContactServiceImpl implements ContactService {
 	@Override
 	public List<Contact> getByUserId(String userId) {
 		return contactRepo.findByUserId(userId);
+	}
+
+	@Override
+	public Page<Contact> getByUser(User user, int page, int size, String sortBy, String direction) {
+		Sort sort = direction.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+		var pageable = PageRequest.of(page, size, sort);
+		return contactRepo.findByUser(user, pageable);
 	}
 }

@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import com.scm.demo.validators.ValidFile;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -40,6 +42,7 @@ public class ContactForm {
 
 	private String linkedInLink;
 
+	@ValidFile(message = "Invalid File")
 	private MultipartFile contactImage;
 
 }

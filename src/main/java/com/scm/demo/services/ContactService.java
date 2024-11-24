@@ -2,7 +2,10 @@ package com.scm.demo.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.scm.demo.entity.Contact;
+import com.scm.demo.entity.User;
 
 public interface ContactService {
 	// save contacts
@@ -27,5 +30,7 @@ public interface ContactService {
 
 	// get contacts by userId
 	List<Contact> getByUserId(String userId);
+
+	Page<Contact> getByUser(User user, int page, int size, String sortField, String sortDirection);
 
 }
