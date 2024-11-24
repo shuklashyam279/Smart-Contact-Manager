@@ -17,12 +17,13 @@ public class SecurityConfig {
 
     private final SecurityCustomUserDetailService userDetailService;
     private final OAuthAuthenicationSuccessHandler handler;
+    private final AuthFailtureHandler authFailtureHandler;
 
-    @Autowired
     public SecurityConfig(SecurityCustomUserDetailService userDetailService,
-            OAuthAuthenicationSuccessHandler handler) {
+            OAuthAuthenicationSuccessHandler handler, AuthFailtureHandler authFailtureHandler) {
         this.userDetailService = userDetailService;
         this.handler = handler;
+        this.authFailtureHandler = authFailtureHandler;
     }
 
     // configuraiton of authentication providerfor spring security
@@ -58,6 +59,7 @@ public class SecurityConfig {
             formLogin.successForwardUrl("/user/dashboard");
             formLogin.usernameParameter("email");
             formLogin.passwordParameter("password");
+            formLogin.failureHandler(authFailtureHandler);
         });
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
